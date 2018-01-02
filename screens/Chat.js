@@ -1,13 +1,8 @@
 import React from 'react';
-
 import { Form, Input, Container, Button, Item, Text, Toast, } from 'native-base'
+import { ScrollView } from 'react-native';
 
-import { ScrollView, Image } from 'react-native';
-import { MapView } from 'expo';
-import Session from 'rnsession'
-
-
-export default class Chat extends Session {
+export default class Chat extends React.Component {
   render() {
     const { params } = this.props.navigation.state;
     return (

@@ -5,9 +5,6 @@ import { Button } from 'native-base'
 import { FontAwesome } from '@expo/vector-icons';
 import R from 'ramda'
 
-import HomeScreen from '../screens/HomeScreen';
-import LinksScreen from '../screens/LinksScreen';
-import SettingsScreen from '../screens/SettingsScreen';
 import Register from '../screens/Register';
 import Login from '../screens/Login';
 import ResetPassword from '../screens/ResetPassword';
@@ -63,6 +60,10 @@ const RootDrawerNavigator = DrawerNavigator(
     Map: { screen: Map, },
     Register: { screen: Register, },
     Login: { screen: Login, },
+<<<<<<< HEAD
+=======
+    Map: { screen: Map, },
+>>>>>>> navigation
     Chat: { screen: Chat, },
     ResetPassword: { screen: ResetPassword, }
   },
@@ -72,6 +73,7 @@ const RootDrawerNavigator = DrawerNavigator(
     drawerCloseRoute: 'DrawerClose',
     drawerToggleRoute: 'DrawerToggle',
     contentComponent: CustomDrawerContentComponent,
+    //backBehavior: 'none', the back button is using the routes from StackNavigator
   }
 );
 
@@ -93,7 +95,7 @@ class BackButton extends React.Component {
       </ View>
     );
   }
-}
+} 
 
 const AppNavigator = new StackNavigator({
 	Main: {
