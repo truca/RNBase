@@ -14,9 +14,13 @@ import {
   ScrollView
 } from 'react-native';
 
-import Session from '../components/RNSession'
+import Session from 'rnsession'
 
-export default class Login extends Session {
+export default class ResetPassword extends Session {
+  static navigationOptions = {
+    drawerLabel: 'ResetPassword',
+    
+  };
   constructor(props) {
     console.log( 'props', props )
     super( props )
@@ -59,7 +63,7 @@ export default class Login extends Session {
   }
 }
 
-Login.defaultProps = {
+ResetPassword.defaultProps = {
   facebookAppId: '684616555049875',
   config: {
     apiKey: 'AIzaSyDw-u_c-vvKMtoE-Ha0KjBgXbCPcSUWENs',

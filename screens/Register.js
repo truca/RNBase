@@ -13,6 +13,10 @@ import {
 import Session from 'rnsession'
 
 export default class Register extends Session {
+  static navigationOptions = {
+    drawerLabel: 'Register',
+    
+  };
   constructor(props) {
     console.log( 'props', props )
     super( props )
