@@ -1,6 +1,6 @@
 import React from 'react';
-import { DrawerNavigator } from 'react-navigation';
-import { StyleSheet, Button, View } from 'react-native'
+import { DrawerNavigator, StackNavigator } from 'react-navigation';
+import { StyleSheet, Button, View, TouchableOpacity, Icon } from 'react-native'
 
 import HomeScreen from '../screens/HomeScreen';
 import LinksScreen from '../screens/LinksScreen';
@@ -9,19 +9,47 @@ import Register from '../screens/Register';
 import Login from '../screens/Login';
 import ResetPassword from '../screens/ResetPassword';
 
-const RootStackNavigator = DrawerNavigator(
+const RootDrawerNavigator = DrawerNavigator(
   {
-    ResetPassword: {
-      screen: ResetPassword,
+    Register: { 
+      screen: Register, 
+      navigationOptions: {
+        headerVisible: true,
+      },
     },
-    Login: {
-      screen: Login,
+    Login: { screen: Login, },
+    ResetPassword: { screen: ResetPassword, }
+  },
+  {
+    navigationOptions: {
+      headerVisible: true,
     },
-    Register: {
-      screen: Register,
-    },
+    headerMode: 'screen',
+    drawerPosition: 'right',
+    drawerOpenRoute: 'DrawerOpen',
+    drawerCloseRoute: 'DrawerClose',
+    drawerToggleRoute: 'DrawerToggle', 
   }
 );
+
+/*const MenuButton = (
+	<View>
+		<TouchableOpacity onPress={() => { this.props.navigate('DrawerOpen') } }>
+			<Icon name="bars" style={{color: 'white', padding: 10, marginLeft:10, fontSize: 20}}/>
+		</TouchableOpacity>
+	</View>
+);*/
+
+const AppNavigator = new StackNavigator({
+	Main: {
+		screen: RootDrawerNavigator,
+	}
+},{
+  navigationOptions: ({ navigation }) => ({
+    title: 'App',
+    //headerLeft : <MenuButton navigate={navigation.navigate} />,
+  })
+});
 
 /*
 ,
@@ -36,6 +64,6 @@ const RootStackNavigator = DrawerNavigator(
 
 export default class RootNavigator extends React.Component {
   render() {
-    return <RootStackNavigator />;
+    return <AppNavigator />;
   }
 }

@@ -8,14 +8,19 @@ import {
   Item,
   Text,
   Toast,
-} from 'native-base' 
+} from 'native-base'
+
+import {
+  ScrollView
+} from 'react-native';
 
 import Session from 'rnsession'
 
 export default class Register extends Session {
   static navigationOptions = {
-    drawerLabel: 'Register',
-    
+    title: 'Register',
+    headerVisible: true,
+    headerRight: <Button color='blue' />,
   };
   constructor(props) {
     console.log( 'props', props )
@@ -66,6 +71,11 @@ export default class Register extends Session {
             <Button block style={buttons} onPress={ this.google.bind(this) }>
               <Text style={text}>
                 google
+              </Text>
+            </Button>
+            <Button block style={buttons} onPress={ () => this.props.navigation.navigate('DrawerOpen') }>
+              <Text style={text}>
+                Open
               </Text>
             </Button>
           </Form>
