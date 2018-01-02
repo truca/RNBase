@@ -73,14 +73,9 @@ export default class Register extends Session {
                 google
               </Text>
             </Button>
-            <Button block style={buttons} onPress={ () => this.props.navigation.navigate('DrawerOpen') }>
-              <Text style={text}>
-                Open
-              </Text>
-            </Button>
           </Form>
         </ScrollView>
-      </Container>)
+      </Container>) 
   }
 }
 

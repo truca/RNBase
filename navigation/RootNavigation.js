@@ -43,26 +43,6 @@ class MenuButton extends React.Component {
   }
 }
 
-/*class MenuButton extends React.Component {
-  render() { 
-    return (
-      <View>
-        <TouchableOpacity onPress={() => { this.props.navigate('DrawerOpen') } }>
-          <Icon name="bars" style={{color: 'white', padding: 10, marginLeft:10, fontSize: 20}}/>
-        </TouchableOpacity>
-      </View>)
-  }
-}*/
-
-/*const MenuButton = () => {
-  return 
-    <View>
-      <TouchableOpacity onPress={() => { this.props.navigate('DrawerOpen') } }>
-        <Icon name="bars" style={{color: 'white', padding: 10, marginLeft:10, fontSize: 20}}/>
-      </TouchableOpacity>
-    </View>
-}*/
-
 const AppNavigator = new StackNavigator({
 	Main: {
 		screen: RootDrawerNavigator,
@@ -73,17 +53,6 @@ const AppNavigator = new StackNavigator({
     headerRight: <MenuButton navigate={navigation.navigate} />,
   })
 });
-
-/*
-,
-  {
-    navigationOptions: () => ({
-      headerTitleStyle: {
-        fontWeight: 'normal',
-      },
-    }),
-  }
-*/
 
 export default class RootNavigator extends React.Component {
   render() {
