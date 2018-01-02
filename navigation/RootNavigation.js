@@ -5,13 +5,11 @@ import { Button } from 'native-base'
 import { FontAwesome } from '@expo/vector-icons';
 import R from 'ramda'
 
-import HomeScreen from '../screens/HomeScreen';
-import LinksScreen from '../screens/LinksScreen';
-import SettingsScreen from '../screens/SettingsScreen';
 import Register from '../screens/Register';
 import Login from '../screens/Login';
 import ResetPassword from '../screens/ResetPassword';
 import Map from '../screens/Map';
+import Chat from '../screens/Chat';
 
 import Session from 'rnsession'
 
@@ -62,6 +60,7 @@ const RootDrawerNavigator = DrawerNavigator(
     Register: { screen: Register, },
     Login: { screen: Login, },
     Map: { screen: Map, },
+    Chat: { screen: Chat, },
     ResetPassword: { screen: ResetPassword, }
   },
   {
@@ -91,7 +90,7 @@ class BackButton extends React.Component {
       </ View>
     );
   }
-}
+} 
 
 const AppNavigator = new StackNavigator({
 	Main: {
