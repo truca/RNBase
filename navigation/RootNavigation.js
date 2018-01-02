@@ -1,50 +1,61 @@
-import { Notifications } from 'expo';
 import React from 'react';
-import { StackNavigator } from 'react-navigation';
+import { DrawerNavigator, StackNavigator } from 'react-navigation';
+import { StyleSheet, Button, View, TouchableOpacity, Icon, Text } from 'react-native'
 
-import MainTabNavigator from './MainTabNavigator';
-import registerForPushNotificationsAsync from '../api/registerForPushNotificationsAsync';
+import HomeScreen from '../screens/HomeScreen';
+import LinksScreen from '../screens/LinksScreen';
+import SettingsScreen from '../screens/SettingsScreen';
+import Register from '../screens/Register';
+import Login from '../screens/Login';
+import ResetPassword from '../screens/ResetPassword';
+import { FontAwesome } from '@expo/vector-icons';
 
-const RootStackNavigator = StackNavigator(
+const RootDrawerNavigator = DrawerNavigator(
   {
-    Main: {
-      screen: MainTabNavigator,
+    Register: { 
+      screen: Register, 
+      navigationOptions: {
+        headerVisible: true,
+      },
     },
+    Login: { screen: Login, },
+    ResetPassword: { screen: ResetPassword, }
   },
   {
-    navigationOptions: () => ({
-      headerTitleStyle: {
-        fontWeight: 'normal',
-      },
-    }),
+    navigationOptions: {
+      headerVisible: true,
+    },
+    headerMode: 'screen',
+    drawerPosition: 'right',
+    drawerOpenRoute: 'DrawerOpen',
+    drawerCloseRoute: 'DrawerClose',
+    drawerToggleRoute: 'DrawerToggle', 
   }
 );
 
-export default class RootNavigator extends React.Component {
-  componentDidMount() {
-    this._notificationSubscription = this._registerForPushNotifications();
-  }
-
-  componentWillUnmount() {
-    this._notificationSubscription && this._notificationSubscription.remove();
-  }
-
+class MenuButton extends React.Component {
   render() {
-    return <RootStackNavigator />;
+    return (
+      <View>
+        <FontAwesome name="bars" style={{padding: 10, marginLeft:10, fontSize: 20}} onPress={() => { this.props.navigate('DrawerOpen') }} /> 
+      </ View>
+    );
   }
+}
 
-  _registerForPushNotifications() {
-    // Send our push token over to our backend so we can receive notifications
-    // You can comment the following line out if you want to stop receiving
-    // a notification every time you open the app. Check out the source
-    // for this function in api/registerForPushNotificationsAsync.js
-    registerForPushNotificationsAsync();
+const AppNavigator = new StackNavigator({
+	Main: {
+		screen: RootDrawerNavigator,
+	}
+},{
+  navigationOptions: ({ navigation }) => ({
+    title: 'App',
+    headerRight: <MenuButton navigate={navigation.navigate} />,
+  })
+});
 
-    // Watch for incoming notifications
-    this._notificationSubscription = Notifications.addListener(this._handleNotification);
+export default class RootNavigator extends React.Component {
+  render() {
+    return <AppNavigator />;
   }
-
-  _handleNotification = ({ origin, data }) => {
-    console.log(`Push notification ${origin} with data: ${JSON.stringify(data)}`);
-  };
 }

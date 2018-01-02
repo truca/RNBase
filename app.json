@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "tutorial-rnsession",
+    "name": "clanapp",
     "description": "A very interesting project.",
-    "slug": "tutorial-rnsession",
+    "slug": "cl.clanapp.clanapp",
     "privacy": "public",
     "sdkVersion": "24.0.0",
     "platforms": ["ios", "android"],

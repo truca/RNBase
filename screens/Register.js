@@ -8,11 +8,20 @@ import {
   Item,
   Text,
   Toast,
-} from 'native-base' 
+} from 'native-base'
+
+import {
+  ScrollView
+} from 'react-native';
 
 import Session from 'rnsession'
 
 export default class Register extends Session {
+  static navigationOptions = {
+    title: 'Register',
+    headerVisible: true,
+    headerRight: <Button color='blue' />,
+  };
   constructor(props) {
     console.log( 'props', props )
     super( props )
@@ -66,7 +75,7 @@ export default class Register extends Session {
             </Button>
           </Form>
         </ScrollView>
-      </Container>)
+      </Container>) 
   }
 }
 

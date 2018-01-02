@@ -10,9 +10,13 @@ import LinksScreen from '../screens/LinksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import Register from '../screens/Register';
 import Login from '../screens/Login';
+import ResetPassword from '../screens/ResetPassword';
 
 export default TabNavigator(
   {
+    ResetPassword: {
+      screen: ResetPassword,
+    },
     Login: {
       screen: Login,
     },

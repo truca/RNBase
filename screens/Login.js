@@ -14,9 +14,13 @@ import {
   ScrollView
 } from 'react-native';
 
-import Session from '../components/RNSession'
+import Session from 'rnsession'
 
 export default class Login extends Session {
+  static navigationOptions = {
+    drawerLabel: 'Login',
+    
+  };
   constructor(props) {
     console.log( 'props', props )
     super( props )
