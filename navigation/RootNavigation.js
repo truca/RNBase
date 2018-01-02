@@ -12,6 +12,7 @@ import Register from '../screens/Register';
 import Login from '../screens/Login';
 import ResetPassword from '../screens/ResetPassword';
 import Map from '../screens/Map';
+import Chat from '../screens/Chat';
 
 import Session from 'rnsession'
 
@@ -59,9 +60,10 @@ const styles = StyleSheet.create({
 
 const RootDrawerNavigator = DrawerNavigator(
   {
+    Map: { screen: Map, },
     Register: { screen: Register, },
     Login: { screen: Login, },
-    Map: { screen: Map, },
+    Chat: { screen: Chat, },
     ResetPassword: { screen: ResetPassword, }
   },
   {
