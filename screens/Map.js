@@ -13,7 +13,7 @@ export default class Map extends React.Component {
       <Container>
         <Text>Map</Text>
         <Button block style={{color: 'white'}} onPress={() => navigate('Chat', { user: 'Lucy' })} ><Text>Lucy</Text></Button> 
-      </Container>
+      </Container> 
     ) 
   }
 }

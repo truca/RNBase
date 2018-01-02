@@ -69,6 +69,7 @@ const RootDrawerNavigator = DrawerNavigator(
     drawerCloseRoute: 'DrawerClose',
     drawerToggleRoute: 'DrawerToggle',
     contentComponent: CustomDrawerContentComponent,
+    //backBehavior: 'none', the back button is using the routes from StackNavigator
   }
 );
 
