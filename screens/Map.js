@@ -1,31 +1,36 @@
 import React, { Component } from 'react'
-//import { Marker } from 'react-native-maps'
+import ClusteredMapView from 'react-native-maps-super-cluster'
+
 import { Form, Input, Container, Button, Item, Text, Toast, } from 'native-base'
 import { ScrollView, Image } from 'react-native';
-//import { MapView } from 'expo';
-import MapView from 'react-native-map-clustering';
-import Marker from '../components/Marker';
-import Session from 'rnsession' 
+import { MapView } from 'expo';
+import Session from 'rnsession'
+import R from 'ramda'
+
+const INIT_REGION = {
+  latitude: -33.4727879,
+  longitude: -70.6298313,
+  latitudeDelta: 0.3922,
+  longitudeDelta: 0.3421,
+} 
 
 export default class Map extends Session {
   constructor(props){
     super(props)
-    this.state = { data: [
-      { location: { latitude: -33.4737980, longitude: -70.6308413, }},
-      { location: { latitude: -33.4737980, longitude: -70.6298414, }},
-      { location: { latitude: -33.4737980, longitude: -70.6288412, }},
-      { location: { latitude: -33.4727879, longitude: -70.6308313, }},
-      { location: { latitude: -33.4727879, longitude: -70.6298314, }},
-      { location: { latitude: -33.4727879, longitude: -70.6288312, }},
-      { location: { latitude: -33.4717778, longitude: -70.6308213, }},
-      { location: { latitude: -33.4717778, longitude: -70.6298214, }},
-      { location: { latitude: -33.4717778, longitude: -70.6298212, }},
-      { location: { latitude: -33.4727879, longitude: -70.6298313, }},
-    ]}
+    this.state = { data: R.times(n => this.generateLocation(n, -10, 10), 100)}
+  }
+  generateLocation(idx, max, min){
+    return { 
+      id: idx,
+      location: { 
+        latitude: (-33.4727879 + Math.random() * (max - min) + min), 
+        longitude: (-70.6298313 + Math.random() * (max - min) + min),
+      }
+    }
   }
   renderMarker = (data) => {
     const { navigate } = this.props.navigation;
-    return <Marker
+    return <MapView.Marker
       key={data.id || Math.random()}
       coordinate={data.location}
       title="Fiesta!"
@@ -36,23 +41,16 @@ export default class Map extends Session {
     />
   }
   render() {
+    const { navigate } = this.props.navigation;
     return (
       <Container>
-        <MapView 
-          provider="google"
-          showsUserLocation={true}
-          showsMyLocationButton={true}
-          zoomControlEnabled={true}
-          style={{ flex: 1 }}
-          initialRegion={{
-            latitude: -33.4727879,
-            longitude: -70.6298313, 
-            latitudeDelta: 0.3922,
-            longitudeDelta: 0.3421,
-          }}
-        >
-          {this.state.data.map( marker => this.renderMarker(marker) )}
-        </MapView>
+        <ClusteredMapView
+          style={{flex: 1}}
+          data={this.state.data}
+          initialRegion={INIT_REGION}
+          renderMarker={this.renderMarker}
+          textStyle={{ color: '#65bc46' }}
+          containerStyle={{backgroundColor: 'white', borderColor: '#65bc46'}} />
       </Container> 
     ) 
   }
