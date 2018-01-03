@@ -51,6 +51,7 @@ export default class Map extends Session {
     errorMessage: null,
     data: null,
     region: null,
+    checkForLocationinterval: null,
   }
   constructor(props){
     super(props)
@@ -123,16 +124,41 @@ export default class Map extends Session {
         errorMessage: 'Permission to access location was denied',
       });
     }
-
-    let location = await Location.getCurrentPositionAsync({});
-    this.setState({ location });
+    let { locationServicesEnabled } = await Location.getProviderStatusAsync();
+    if( locationServicesEnabled ){
+      let location = await Location.getCurrentPositionAsync({});
+      this.setState({ location });
+    }else{
+      Toast.show({ text: 'Please turn on the location services', 
+        position: this.props.toastPosition, 
+        buttonText: this.props.toastText, 
+        duration: this.props.notificationDuration, })
+      //  duration: 0.5*60*1000,
+      //set watch to get user geolocation
+      let checkForLocationinterval = setInterval(async () => {
+        let { locationServicesEnabled } = await Location.getProviderStatusAsync();
+        if( locationServicesEnabled ){
+          let location = await Location.getCurrentPositionAsync({});
+          clearInterval(this.state.checkForLocationinterval)
+          this.setState({ location, checkForLocationinterval: null });
+        }else{
+          //Toast.show({ text: 'Please turn on the location services', position: this.props.toastPosition, duration: 2*1000, })
+        }
+      }, this.props.checkLocationInterval)
+      this.setState({ checkForLocationinterval })
+    }
+  }
+  componentWillUnmount(){
+    if(this.state.checkForLocationinterval){
+      clearInterval(this.state.checkForLocationinterval)
+    }
   }
   render() {
     const { navigate } = this.props.navigation;
     let text = 'Waiting..';
     if (this.state.errorMessage) {
       text = this.state.errorMessage;
-    } else if (this.state.location) {
+    } else if (this.state.location) { 
       text = JSON.stringify(this.state.location);
     }
     console.log('map', text)  
@@ -152,7 +178,7 @@ export default class Map extends Session {
             <TouchableOpacity onPress={() => this.decrement()} style={[styles.bubble, styles.button]} >
                 <Text style={{fontSize: 18, fontWeight: 'bold'}}>-</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => this.center()} style={[styles.bubble, styles.button, { paddingVertical: 12 }]} >
+            <TouchableOpacity onPress={() => this.center()} style={[styles.bubble, styles.button, { paddingVertical: 12, display: this.state.location? 'flex' : 'none' }]} > 
                 <MaterialCommunityIcons style={{fontSize: 18, fontWeight: 'bold'}} name="map-marker-radius" />
             </TouchableOpacity>
           </View>
@@ -170,6 +196,10 @@ Map.defaultProps = {
     storageBucket: 'clanapp-d35d2.appspot.com',
     messagingSenderId: '935866938730'
   },
+  toastPosition: 'bottom',
+  toastText: 'Ok',
+  notificationDuration: 0.5*60*1000,
+  checkLocationInterval: 1*1000,
 }
 
 const styles = StyleSheet.create({
@@ -205,6 +235,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
       flexDirection: 'column',
       marginVertical: 20,
+      marginBottom: 60,
       backgroundColor: 'transparent',
       marginRight: 5, 
   },
