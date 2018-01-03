@@ -1,15 +1,39 @@
-import React from 'react';
-
+import React, { Component } from 'react'
+//import { Marker } from 'react-native-maps'
 import { Form, Input, Container, Button, Item, Text, Toast, } from 'native-base'
-
 import { ScrollView, Image } from 'react-native';
 import { MapView } from 'expo';
-import Session from 'rnsession'
-
+import Session from 'rnsession' 
 
 export default class Map extends Session {
-  render() {
+  constructor(props){
+    super(props)
+    this.state = { data: [
+      { location: { latitude: -33.4737980, longitude: -70.6308413, }},
+      { location: { latitude: -33.4737980, longitude: -70.6298414, }},
+      { location: { latitude: -33.4737980, longitude: -70.6288412, }},
+      { location: { latitude: -33.4727879, longitude: -70.6308313, }},
+      { location: { latitude: -33.4727879, longitude: -70.6298314, }},
+      { location: { latitude: -33.4727879, longitude: -70.6288312, }},
+      { location: { latitude: -33.4717778, longitude: -70.6308213, }},
+      { location: { latitude: -33.4717778, longitude: -70.6298214, }},
+      { location: { latitude: -33.4717778, longitude: -70.6298212, }},
+      { location: { latitude: -33.4727879, longitude: -70.6298313, }},
+    ]}
+  }
+  renderMarker = (data) => {
     const { navigate } = this.props.navigation;
+    return <MapView.Marker
+      key={data.id || Math.random()}
+      coordinate={data.location}
+      title="Fiesta!"
+      description="Pastuza wena onda"
+      image={ require('../assets/images/robot-prod.png') }
+      onCalloutPress={ () => this.state.user? navigate('Chat', { user: 'Lucy' }) : navigate('Login')}
+      onPress={ this.showCallout }
+    />
+  }
+  render() {
     return (
       <Container>
         <MapView 
@@ -25,21 +49,9 @@ export default class Map extends Session {
             longitudeDelta: 0.3421,
           }}
         >
-          
-            <MapView.Marker
-              coordinate={{
-                latitude: -33.4727879,
-                longitude: -70.6298313,
-              }}
-              title="Fiesta!"
-              description="Pastuza wena onda"
-              image={ require('../assets/images/robot-prod.png') }
-              onCalloutPress={ () => this.state.user? navigate('Chat', { user: 'Lucy' }) : navigate('Login')}
-              onPress={ this.showCallout }
-            />
-          
+          {this.state.data.map( marker => this.renderMarker(marker) )}
         </MapView>
-      </Container>
+      </Container> 
     ) 
   }
 }

@@ -60,10 +60,6 @@ const RootDrawerNavigator = DrawerNavigator(
     Map: { screen: Map, },
     Register: { screen: Register, },
     Login: { screen: Login, },
-<<<<<<< HEAD
-=======
-    Map: { screen: Map, },
->>>>>>> navigation
     Chat: { screen: Chat, },
     ResetPassword: { screen: ResetPassword, }
   },
