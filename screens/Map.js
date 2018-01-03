@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
 import ClusteredMapView from 'react-native-maps-super-cluster'
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Constants, Location, Permissions } from 'expo';
 
 import { Form, Input, Container, Button, Item, Text, Toast, } from 'native-base'
 import {
+  Platform,
   ScrollView, 
   Image,
   StyleSheet,
@@ -44,6 +46,12 @@ export function getRegion(latitude, longitude, latitudeDelta) {
 }
 
 export default class Map extends Session {
+  state = {
+    location: null,
+    errorMessage: null,
+    data: null,
+    region: null,
+  }
   constructor(props){
     super(props)
     const region = getRegion(INIT_REGION.latitude, INIT_REGION.longitude, INIT_REGION.latitudeDelta);
@@ -89,15 +97,45 @@ export default class Map extends Session {
     this.setState({region});
   }
   center() {
-    const region = getRegion(
-      USER_REGION.latitude,
-      USER_REGION.longitude,
-      this.state.region.latitudeDelta
-    );
-    this.setState({region});
+    if(this.state.location){
+      const region = getRegion(
+        this.state.location.coords.latitude,
+        this.state.location.coords.longitude,
+        this.state.region.latitudeDelta
+      );
+      this.setState({region});
+    }
+  }
+  componentWillMount() {
+    if (Platform.OS === 'android' && !Constants.isDevice) {
+      this.setState({
+        errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
+      });
+    } else {
+      this._getLocationAsync();
+    }
+  }
+
+  _getLocationAsync = async () => {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== 'granted') {
+      this.setState({
+        errorMessage: 'Permission to access location was denied',
+      });
+    }
+
+    let location = await Location.getCurrentPositionAsync({});
+    this.setState({ location });
   }
   render() {
     const { navigate } = this.props.navigation;
+    let text = 'Waiting..';
+    if (this.state.errorMessage) {
+      text = this.state.errorMessage;
+    } else if (this.state.location) {
+      text = JSON.stringify(this.state.location);
+    }
+    console.log('map', text)  
     return (
       <Container style={styles.container2} >
         <ClusteredMapView
