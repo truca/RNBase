@@ -1,23 +1,53 @@
 import React, { Component } from 'react'
 import ClusteredMapView from 'react-native-maps-super-cluster'
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import { Form, Input, Container, Button, Item, Text, Toast, } from 'native-base'
-import { ScrollView, Image } from 'react-native';
+import {
+  ScrollView, 
+  Image,
+  StyleSheet,
+  View,
+  Dimensions,
+  TouchableOpacity,
+} from 'react-native';
 import { MapView } from 'expo';
 import Session from 'rnsession'
 import R from 'ramda'
 
-const INIT_REGION = {
+const INIT_REGION = { 
   latitude: -33.4727879,
   longitude: -70.6298313,
   latitudeDelta: 0.3922,
   longitudeDelta: 0.3421,
-} 
+}
+
+const USER_REGION = { 
+  latitude: -30.9178213,
+  longitude: -65.966537,
+  latitudeDelta: 0.3922,
+  longitudeDelta: 0.3421,
+}
+
+const {width, height} = Dimensions.get('window');
+const ASPECT_RATIO = width / height;
+
+export function getRegion(latitude, longitude, latitudeDelta) {
+  const LONGITUDE_DELTA = latitudeDelta * ASPECT_RATIO;
+
+  return {
+      latitude: latitude,
+      longitude: longitude,
+      latitudeDelta: latitudeDelta,
+      longitudeDelta: LONGITUDE_DELTA,
+  };
+}
 
 export default class Map extends Session {
   constructor(props){
     super(props)
-    this.state = { data: R.times(n => this.generateLocation(n, -10, 10), 100)}
+    const region = getRegion(INIT_REGION.latitude, INIT_REGION.longitude, INIT_REGION.latitudeDelta);
+    this.state = { region, data: R.times(n => this.generateLocation(n, -10, 10), 100)}
   }
   generateLocation(idx, max, min){
     return { 
@@ -40,18 +70,55 @@ export default class Map extends Session {
       onPress={ this.showCallout }
     />
   }
+  increment() {
+    const region = getRegion(
+      this.state.region.latitude,
+      this.state.region.longitude,
+      this.state.region.latitudeDelta * 0.5
+    );
+
+    this.setState({region});
+  }
+
+  decrement() {
+    const region = getRegion(
+      this.state.region.latitude,
+      this.state.region.longitude,
+      this.state.region.latitudeDelta / 0.5
+    );
+    this.setState({region});
+  }
+  center() {
+    const region = getRegion(
+      USER_REGION.latitude,
+      USER_REGION.longitude,
+      this.state.region.latitudeDelta
+    );
+    this.setState({region});
+  }
   render() {
     const { navigate } = this.props.navigation;
     return (
-      <Container>
+      <Container style={styles.container2} >
         <ClusteredMapView
-          style={{flex: 1}}
+          style={styles.map}
           data={this.state.data}
-          initialRegion={INIT_REGION}
-          renderMarker={this.renderMarker}
+          region={this.state.region}
+          renderMarker={this.renderMarker} 
           textStyle={{ color: '#65bc46' }}
           containerStyle={{backgroundColor: 'white', borderColor: '#65bc46'}} />
-      </Container> 
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity onPress={() => this.increment()} style={[styles.bubble, styles.button]} >
+                <Text style={{fontSize: 18, fontWeight: 'bold'}}>+</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => this.decrement()} style={[styles.bubble, styles.button]} >
+                <Text style={{fontSize: 18, fontWeight: 'bold'}}>-</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => this.center()} style={[styles.bubble, styles.button, { paddingVertical: 12 }]} >
+                <MaterialCommunityIcons style={{fontSize: 18, fontWeight: 'bold'}} name="map-marker-radius" />
+            </TouchableOpacity>
+          </View>
+      </Container>
     ) 
   }
 }
@@ -66,3 +133,41 @@ Map.defaultProps = {
     messagingSenderId: '935866938730'
   },
 }
+
+const styles = StyleSheet.create({
+  container: {
+      ...StyleSheet.absoluteFillObject,
+      justifyContent: 'flex-end',
+      alignItems: 'center',
+  },
+  container2: { 
+    justifyContent: 'flex-end', 
+    flexDirection: 'column', 
+    alignItems: 'flex-end' 
+  },
+  map: {
+      ...StyleSheet.absoluteFillObject,
+  },
+  bubble: {
+      backgroundColor: 'rgba(255,255,255,0.7)',
+      paddingHorizontal: 18,
+      paddingVertical: 12,
+      borderRadius: 0,
+  },
+  latlng: {
+      width: 200,
+      alignItems: 'stretch',
+  },
+  button: {
+      width: 50,
+      paddingVertical: 8,
+      alignItems: 'center',
+      marginVertical: 5,
+  },
+  buttonContainer: {
+      flexDirection: 'column',
+      marginVertical: 20,
+      backgroundColor: 'transparent',
+      marginRight: 5, 
+  },
+});
