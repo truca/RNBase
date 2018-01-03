@@ -2,7 +2,9 @@ import React, { Component } from 'react'
 //import { Marker } from 'react-native-maps'
 import { Form, Input, Container, Button, Item, Text, Toast, } from 'native-base'
 import { ScrollView, Image } from 'react-native';
-import { MapView } from 'expo';
+//import { MapView } from 'expo';
+import MapView from 'react-native-map-clustering';
+import Marker from '../components/Marker';
 import Session from 'rnsession' 
 
 export default class Map extends Session {
@@ -23,7 +25,7 @@ export default class Map extends Session {
   }
   renderMarker = (data) => {
     const { navigate } = this.props.navigation;
-    return <MapView.Marker
+    return <Marker
       key={data.id || Math.random()}
       coordinate={data.location}
       title="Fiesta!"
