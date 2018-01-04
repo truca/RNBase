@@ -191,7 +191,13 @@ export default class Map extends Session {
           renderMarker={this.renderMarker} 
           textStyle={{ color: '#65bc46' }}
           containerStyle={{backgroundColor: 'white', borderColor: '#65bc46'}}>
-          
+          {location? 
+            (<MapView.Marker
+              key={this.state.data.length}
+              coordinate={{ latitude: location.coords.latitude, longitude: location.coords.longitude }} 
+              onPress={ this.handleMarkerPress({ latitude: location.coords.latitude, longitude: location.coords.longitude }) } 
+            />) : null
+          }
         </ClusteredMapView> 
 
         <View style={styles.buttonContainer}>
