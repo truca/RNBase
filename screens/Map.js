@@ -45,6 +45,17 @@ export function getRegion(latitude, longitude, latitudeDelta) {
   };
 }
 
+class MyMarker extends MapView.Marker {
+  onPress(){
+    console.log('handlePress', this.props)
+    //this.props.handlePress()
+    this.showCallout()
+  }
+  render(){
+    return <MapView.Marker {...this.props} onPress={this.onPress.bind(this)} />
+  }
+}
+
 export default class Map extends Session {
   state = {
     location: null,
@@ -62,7 +73,7 @@ export default class Map extends Session {
     return { 
       id: idx,
       location: { 
-        latitude: (-33.4727879 + Math.random() * (max - min) + min), 
+        latitude:  (-33.4727879 + Math.random() * (max - min) + min),
         longitude: (-70.6298313 + Math.random() * (max - min) + min),
       }
     }
@@ -76,7 +87,7 @@ export default class Map extends Session {
       description="Pastuza wena onda"
       image={ require('../assets/images/robot-prod.png') }
       onCalloutPress={ () => this.state.user? navigate('Chat', { user: 'Lucy' }) : navigate('Login')}
-      onPress={ this.showCallout }
+      onPress={ () => this.handleMarkerPress(data.location) } 
     />
   }
   increment() {
@@ -88,7 +99,6 @@ export default class Map extends Session {
 
     this.setState({region});
   }
-
   decrement() {
     const region = getRegion(
       this.state.region.latitude,
@@ -116,7 +126,6 @@ export default class Map extends Session {
       this._getLocationAsync();
     }
   }
-
   _getLocationAsync = async () => {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
     if (status !== 'granted') {
@@ -153,7 +162,18 @@ export default class Map extends Session {
       clearInterval(this.state.checkForLocationinterval)
     }
   }
+  handleMarkerPress(location) {
+    console.log('location', location)
+    const region = getRegion(
+      location.latitude,
+      location.longitude,
+      this.state.region.latitudeDelta,
+    );
+
+    setTimeout(() => this.setState({region}), 100) 
+  }
   render() {
+    const { location } = this.state
     const { navigate } = this.props.navigation;
     let text = 'Waiting..';
     if (this.state.errorMessage) {
@@ -161,7 +181,7 @@ export default class Map extends Session {
     } else if (this.state.location) { 
       text = JSON.stringify(this.state.location);
     }
-    console.log('map', text)  
+    //console.log('map', text)  
     return (
       <Container style={styles.container2} >
         <ClusteredMapView
@@ -170,18 +190,21 @@ export default class Map extends Session {
           region={this.state.region}
           renderMarker={this.renderMarker} 
           textStyle={{ color: '#65bc46' }}
-          containerStyle={{backgroundColor: 'white', borderColor: '#65bc46'}} />
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity onPress={() => this.increment()} style={[styles.bubble, styles.button]} >
-                <Text style={{fontSize: 18, fontWeight: 'bold'}}>+</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => this.decrement()} style={[styles.bubble, styles.button]} >
-                <Text style={{fontSize: 18, fontWeight: 'bold'}}>-</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => this.center()} style={[styles.bubble, styles.button, { paddingVertical: 12, display: this.state.location? 'flex' : 'none' }]} > 
-                <MaterialCommunityIcons style={{fontSize: 18, fontWeight: 'bold'}} name="map-marker-radius" />
-            </TouchableOpacity>
-          </View>
+          containerStyle={{backgroundColor: 'white', borderColor: '#65bc46'}}>
+          
+        </ClusteredMapView> 
+
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity onPress={() => this.increment()} style={[styles.bubble, styles.button]} >
+              <Text style={{fontSize: 18, fontWeight: 'bold'}}>+</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => this.decrement()} style={[styles.bubble, styles.button]} >
+              <Text style={{fontSize: 18, fontWeight: 'bold'}}>-</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => this.center()} style={[styles.bubble, styles.button, { paddingVertical: 12, display: location? 'flex' : 'none' }]} > 
+              <MaterialCommunityIcons style={{fontSize: 18, fontWeight: 'bold'}} name="map-marker-radius" />
+          </TouchableOpacity>
+        </View>
       </Container>
     ) 
   }
@@ -240,3 +263,13 @@ const styles = StyleSheet.create({
       marginRight: 5, 
   },
 });
+
+/**
+ * {location? 
+            (<MapView.Marker
+              key={this.state.data.length}
+              coordinate={{ latitude: location.coords.latitude, longitude: location.coords.longitude }} 
+              onPress={ this.handleMarkerPress({ latitude: location.coords.latitude, longitude: location.coords.longitude }) } 
+            />) : null
+          }
+ */
