@@ -269,13 +269,3 @@ const styles = StyleSheet.create({
       marginRight: 5, 
   },
 });
-
-/**
- * {location? 
-            (<MapView.Marker
-              key={this.state.data.length}
-              coordinate={{ latitude: location.coords.latitude, longitude: location.coords.longitude }} 
-              onPress={ this.handleMarkerPress({ latitude: location.coords.latitude, longitude: location.coords.longitude }) } 
-            />) : null
-          }
- */
