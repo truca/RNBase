@@ -80,7 +80,7 @@ export default class Map extends Session {
   }
   renderMarker = (data) => {
     const { navigate } = this.props.navigation;
-    return <MapView.Marker
+    return <MapView.Marker.Animated 
       key={data.id || Math.random()}
       coordinate={data.location}
       title="Fiesta!"
@@ -175,7 +175,7 @@ export default class Map extends Session {
       latitudeDelta,
     );
     console.log('this.map', this.map)  
-    this.setState({region})
+    this.setState({ region }) //: new MapView.AnimatedRegion({ region })
   }
   setRegion = (region) => {
     this.setState({region})
@@ -241,7 +241,7 @@ export default class Map extends Session {
           renderMarker={this.renderMarker}
           renderCluster={this.renderCluster}
           textStyle={{ color: '#65bc46' }}
-          moveOnMarkerPress={false}
+          moveOnMarkerPress={true} 
           //onRegionChange={this.setRegion} 
           onRegionChangeComplete={this.setRegion}
           containerStyle={{backgroundColor: 'white', borderColor: '#65bc46'}}>
