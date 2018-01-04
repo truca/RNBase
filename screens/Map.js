@@ -194,7 +194,9 @@ export default class Map extends Session {
     //const clusteringEngine = this.map.getClusteringEngine(),
     //      clusteredPoints = clusteringEngine.getLeaves(clusterId, 100)
     return ( 
-      <MapView.Marker coordinate={coordinate} onPress={() => { this.handleClusterPress(coordinate) }}>
+      <MapView.Marker coordinate={coordinate} 
+        onPress={() => { this.handleClusterPress(coordinate) }}
+        image={ require('../assets/images/robot-dev.png') }> 
         <View style={styles.myClusterStyle}>
           <Text style={styles.myClusterTextStyle}>
             {pointCount}
@@ -240,7 +242,8 @@ export default class Map extends Session {
           renderCluster={this.renderCluster}
           textStyle={{ color: '#65bc46' }}
           moveOnMarkerPress={false}
-          onRegionChange={this.setRegion} 
+          //onRegionChange={this.setRegion} 
+          onRegionChangeComplete={this.setRegion}
           containerStyle={{backgroundColor: 'white', borderColor: '#65bc46'}}>
           {location? 
             (<MapView.Marker
