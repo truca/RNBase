@@ -162,19 +162,19 @@ export default class Map extends Session {
       clearInterval(this.state.checkForLocationinterval)
     }
   }
-  handleMarkerPress(location) {
+  handleMarkerPress = (location) => {
     this.mapMovement(location, this.state.region.latitudeDelta)
   }
-  handleClusterPress(location){
+  handleClusterPress = (location) => {
     this.mapMovement(location, this.state.region.latitudeDelta*0.5)
   }
-  mapMovement(location, latitudeDelta) {
+  mapMovement = (location, latitudeDelta) => {
     const region = getRegion(
       location.latitude,
       location.longitude,
       latitudeDelta,
     );
-
+    console.log('this.map', this.map)  
     this.setState({region})
   }
   setRegion = (region) => {
