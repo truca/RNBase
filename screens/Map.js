@@ -67,7 +67,7 @@ export default class Map extends Session {
   constructor(props){
     super(props)
     const region = getRegion(INIT_REGION.latitude, INIT_REGION.longitude, INIT_REGION.latitudeDelta);
-    this.state = { region, data: R.times(n => this.generateLocation(n, -10, 10), 100)}
+    this.state = { region, data: R.times(n => this.generateLocation(n, -0.1, 0.1), 100)}
   }
   generateLocation(idx, max, min){
     return { 
