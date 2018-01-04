@@ -163,14 +163,62 @@ export default class Map extends Session {
     }
   }
   handleMarkerPress(location) {
-    console.log('location', location)
+    this.mapMovement(location, this.state.region.latitudeDelta)
+  }
+  handleClusterPress(location){
+    this.mapMovement(location, this.state.region.latitudeDelta*0.5)
+  }
+  mapMovement(location, latitudeDelta) {
     const region = getRegion(
       location.latitude,
       location.longitude,
-      this.state.region.latitudeDelta,
+      latitudeDelta,
     );
 
-    setTimeout(() => this.setState({region}), 100) 
+    this.setState({region})
+  }
+  setRegion = (region) => {
+    this.setState({region})
+  }
+  renderCluster = (cluster, onPress) => {
+    const pointCount = cluster.pointCount,
+          coordinate = cluster.coordinate,
+          clusterId = cluster.clusterId
+
+    // use pointCount to calculate cluster size scaling
+    // and apply it to "style" prop below
+
+    // eventually get clustered points by using
+    // underlying SuperCluster instance
+    // Methods ref: https://github.com/mapbox/supercluster
+    //const clusteringEngine = this.map.getClusteringEngine(),
+    //      clusteredPoints = clusteringEngine.getLeaves(clusterId, 100)
+    return ( 
+      <MapView.Marker coordinate={coordinate} onPress={() => { this.handleClusterPress(coordinate) }}>
+        <View style={styles.myClusterStyle}>
+          <Text style={styles.myClusterTextStyle}>
+            {pointCount}
+          </Text>
+        </View>
+        {
+          /*
+            Eventually use <Callout /> to
+            show clustered point thumbs, i.e.:
+            <Callout>
+              <ScrollView>
+                {
+                  clusteredPoints.map(p => (
+                    <Image source={p.image}>
+                  ))
+                }
+              </ScrollView>
+            </Callout>
+
+            IMPORTANT: be aware that Marker's onPress event isn't really consistent when using Callout.
+           */
+        }
+      </MapView.Marker>
+    )
   }
   render() {
     const { location } = this.state
@@ -188,8 +236,11 @@ export default class Map extends Session {
           style={styles.map}
           data={this.state.data}
           region={this.state.region}
-          renderMarker={this.renderMarker} 
+          renderMarker={this.renderMarker}
+          renderCluster={this.renderCluster}
           textStyle={{ color: '#65bc46' }}
+          moveOnMarkerPress={false}
+          onRegionChange={this.setRegion} 
           containerStyle={{backgroundColor: 'white', borderColor: '#65bc46'}}>
           {location? 
             (<MapView.Marker
