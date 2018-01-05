@@ -1,20 +1,42 @@
 import React from 'react';
 import { Form, Input, Container, Button, Item, Text, Toast, } from 'native-base'
-import { View, TouchableOpacity, ScrollView, Image } from 'react-native';
+import { View, TouchableOpacity, ScrollView, Image, Animated, Easing } from 'react-native';
 import { ImagePicker } from 'expo';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Foundation } from '@expo/vector-icons';
 
+console.log('animated', Animated) 
 
 export default class Profile extends React.Component {
   state = {
     image: null,
     uploading: false,
   };
-
+  constructor () {
+    super()
+    this.spinValue = new Animated.Value(0)
+  }
+  componentDidMount () {
+    this.spin()
+  }
+  spin () {
+    this.spinValue.setValue(0)
+    Animated.timing(
+      this.spinValue,
+      {
+        toValue: 1,
+        duration: 1500,
+        easing: Easing.linear
+      }
+    ).start(() => this.spin()) //callback after completion
+  }
   render() {
     let { image, uploading } = this.state;
     const text = { color: 'white' },
       buttons = { marginTop: 20 }
+      const spin = this.spinValue.interpolate({
+        inputRange: [0, 1],
+        outputRange: ['0deg', '360deg']
+      })
 
     return (
       <View style={{ flex: 1, alignItems: 'center' }}>
@@ -24,7 +46,16 @@ export default class Profile extends React.Component {
         <Button block style={buttons} onPress={this._takePicture}>
           <Text style={text}>Take a picture</Text>
         </Button>
-        {uploading && <MaterialCommunityIcons name="loading" style={{padding: 10, marginLeft:10, fontSize: 20}}/> }
+        <Animated.View style={{ transform: [{rotate: spin}] }} >
+          <Foundation name="refresh" style={{fontSize: 40}}/>
+        </Animated.View>
+        
+
+        {uploading && 
+          <Animated.View style={{ transform: [{rotate: spin}] }} >
+            <Foundation name="refresh" style={{fontSize: 40}}/>
+          </Animated.View> 
+        }
         {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
       </View>
     );
