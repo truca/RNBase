@@ -10,6 +10,7 @@ import Login from '../screens/Login';
 import ResetPassword from '../screens/ResetPassword';
 import Map from '../screens/Map';
 import Chat from '../screens/Chat';
+import Profile from '../screens/Profile';
 
 import Session from 'rnsession'
 
@@ -17,7 +18,8 @@ class CustomDrawerContentComponent extends Session {
   getItems(){
     let items = this.state.user? 
       [ 
-        { "key": "Map", "routeName": "Map", } 
+        { "key": "Map", "routeName": "Map", },
+        { "key": "Profile", "routeName": "Profile", }
       ] 
       : 
       [ 
@@ -57,6 +59,7 @@ const styles = StyleSheet.create({
 
 const RootDrawerNavigator = DrawerNavigator(
   {
+    Profile: { screen: Profile, },
     Map: { screen: Map, },
     Register: { screen: Register, },
     Login: { screen: Login, },

@@ -6,9 +6,10 @@ import RootNavigation from './navigation/RootNavigation';
 
 import {
   Root,
-} from 'native-base' 
+} from 'native-base'
+import Session from 'rnsession'
 
-export default class App extends React.Component {
+export default class App extends Session {
   state = {
     isLoadingComplete: false,
   };
@@ -67,6 +68,17 @@ export default class App extends React.Component {
   _handleFinishLoading = () => {
     this.setState({ isLoadingComplete: true });
   };
+}
+
+App.defaultProps = {
+  facebookAppId: '684616555049875',
+  config: {
+    apiKey: 'AIzaSyDw-u_c-vvKMtoE-Ha0KjBgXbCPcSUWENs',
+    authDomain: 'clanapp-d35d2.firebaseapp.com',
+    databaseURL: 'https://clanapp-d35d2.firebaseio.com',
+    storageBucket: 'clanapp-d35d2.appspot.com',
+    messagingSenderId: '935866938730'
+  },
 }
 
 const styles = StyleSheet.create({
