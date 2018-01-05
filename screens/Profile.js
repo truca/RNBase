@@ -46,10 +46,6 @@ export default class Profile extends React.Component {
         <Button block style={buttons} onPress={this._takePicture}>
           <Text style={text}>Take a picture</Text>
         </Button>
-        <Animated.View style={{ transform: [{rotate: spin}] }} >
-          <Foundation name="refresh" style={{fontSize: 40}}/>
-        </Animated.View>
-        
 
         {uploading && 
           <Animated.View style={{ transform: [{rotate: spin}] }} >
