@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form, Input, Container, Button, Item, Text, Toast, } from 'native-base'
 import { View, TouchableOpacity, ScrollView, Image, Animated, Easing } from 'react-native';
-import { ImagePicker } from 'expo';
+import { Constants, ImagePicker } from 'expo';
 import { Foundation } from '@expo/vector-icons';
 
 console.log('animated', Animated) 
@@ -10,6 +10,7 @@ export default class Profile extends React.Component {
   state = {
     image: null,
     uploading: false,
+    apiUrl: Constants.isDevice? `https://1e1d9301.ngrok.io/upload` : `http://localhost:3000/upload`,
   };
   constructor () {
     super()
@@ -29,6 +30,9 @@ export default class Profile extends React.Component {
       }
     ).start(() => this.spin()) //callback after completion
   }
+  getApiUrl = () => {
+    return Constants.isDevice? `https://1e1d9301.ngrok.io` : `http://localhost:3000`
+  }
   render() {
     let { image, uploading } = this.state;
     const text = { color: 'white' },
@@ -47,6 +51,10 @@ export default class Profile extends React.Component {
           <Text style={text}>Take a picture</Text>
         </Button>
 
+        <Image 
+          source={{ uri: 'https://1e1d9301.ngrok.io/static/27853a8d635e6faecc114a13d7c54e30' }}
+          style={{ width: 200, height: 200 }} />
+        
         {uploading && 
           <Animated.View style={{ transform: [{rotate: spin}] }} >
             <Foundation name="refresh" style={{fontSize: 40}}/>
@@ -60,7 +68,7 @@ export default class Profile extends React.Component {
   _pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
-      aspect: [4, 3],
+      aspect: [1, 1],
     });
 
     this._handleImagePicked(result);
@@ -69,7 +77,7 @@ export default class Profile extends React.Component {
   _takePicture = async () => {
     let result = await ImagePicker.launchCameraAsync({
       allowsEditing: true,
-      aspect: [4, 3],
+      aspect: [1, 1],
     });
 
     this._handleImagePicked(result);
@@ -82,9 +90,12 @@ export default class Profile extends React.Component {
       this.setState({ uploading: true });
 
       if (!pickerResult.cancelled) {
-        uploadResponse = await uploadImageAsync(pickerResult.uri);
+        uploadResponse = await uploadImageAsync(pickerResult.uri, this.getApiUrl())
         uploadResult = await uploadResponse.json();
-        this.setState({ image: uploadResult.location });
+        console.log(uploadResult)
+        let u = uploadResult
+        console.log('image', `${this.getApiUrl()}/static/${u.filename}`) 
+        this.setState({ image: `${this.getApiUrl()}/static/${u.filename}` });
       }
     } catch (e) {
       console.log({ uploadResponse });
@@ -92,24 +103,25 @@ export default class Profile extends React.Component {
       console.log({ e });
       alert('Upload failed, sorry :(');
     } finally {
-      this.setState({ uploading: false });
+      this.setState({ uploading: false }); 
     }
   }
 }
 
-async function uploadImageAsync(uri) {
-  let apiUrl = 'https://file-upload-example-backend-dkhqoilqqn.now.sh/upload';
+async function uploadImageAsync(uri, apiUrl) {
+  /*let apiUrl = 'https://file-upload-example-backend-dkhqoilqqn.now.sh/upload';
 
   // Note:
   // Uncomment this if you want to experiment with local server
   //
-  // if (Constants.isDevice) {
-  //   apiUrl = `https://your-ngrok-subdomain.ngrok.io/upload`;
-  // } else {
-  //   apiUrl = `http://localhost:3000/upload`
-  // }
+  //DEV: ngrok http 3000
+  if (Constants.isDevice) {
+    apiUrl = `https://1e1d9301.ngrok.io/upload`; 
+  } else {
+    apiUrl = `http://localhost:3000/upload`
+  }*/
 
-  let uriParts = uri.split('.');
+  let uriParts = uri.split('.'); 
   let fileType = uri[uri.length - 1];
 
   let formData = new FormData();
@@ -128,5 +140,6 @@ async function uploadImageAsync(uri) {
     },
   };
 
-  return fetch(apiUrl, options);
+  console.log(`${apiUrl}/upload`) 
+  return fetch(`${apiUrl}/upload`, options);
 }
