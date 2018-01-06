@@ -14,3 +14,16 @@ For development, it uses ngrok to build a tunnel (the link changes, so you have 
 ###Production
 
 In production, the link wont change, so you dont need to keep changing the link
+
+##Notifications
+
+The token will be printed in XDE. To test then you can use curl (change "ExponentPushToken[xxxxxxxxxxxxxxxxxxxxxx]" for the actual token):
+
+````
+curl -H "Content-Type: application/json" -X POST https://exp.host/--/api/v2/push/send -d '{
+  "to": "ExponentPushToken[xxxxxxxxxxxxxxxxxxxxxx]",
+  "title":"hello",
+  "body": "world"
+}'
+````
+
