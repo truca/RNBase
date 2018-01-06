@@ -59,8 +59,8 @@ const styles = StyleSheet.create({
 
 const RootDrawerNavigator = DrawerNavigator(
   {
-    Profile: { screen: Profile, },
     Map: { screen: Map, },
+    Profile: { screen: Profile, },
     Register: { screen: Register, },
     Login: { screen: Login, },
     Chat: { screen: Chat, },

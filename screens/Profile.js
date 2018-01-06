@@ -50,10 +50,6 @@ export default class Profile extends React.Component {
         <Button block style={buttons} onPress={this._takePicture}>
           <Text style={text}>Take a picture</Text>
         </Button>
-
-        <Image 
-          source={{ uri: 'https://1e1d9301.ngrok.io/static/27853a8d635e6faecc114a13d7c54e30' }}
-          style={{ width: 200, height: 200 }} />
         
         {uploading && 
           <Animated.View style={{ transform: [{rotate: spin}] }} >
