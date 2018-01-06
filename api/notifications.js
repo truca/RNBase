@@ -1,6 +1,6 @@
 import { Permissions, Notifications } from 'expo';
 
-export default async function getToken() {
+async function getToken() {
   const { existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
   let finalStatus = existingStatus;
 
@@ -22,4 +22,8 @@ export default async function getToken() {
   let token = await Notifications.getExpoPushTokenAsync();
 
   return token;
+}
+
+module.exports = {
+  getToken 
 }
