@@ -3,6 +3,7 @@ import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { AppLoading, Asset, Font } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
 import RootNavigation from './navigation/RootNavigation';
+//import getToken from './api/notifications'
 
 import {
   Root,
@@ -19,6 +20,10 @@ export default class App extends Session {
       'Roboto_medium': require('native-base/Fonts/Roboto_medium.ttf'),
     });
     this.setState({ fontsAreLoaded: true });
+  }
+  async componentDidMount() {
+    const token = await getToken();
+    console.log('token', token)
   }
 
   render() {
