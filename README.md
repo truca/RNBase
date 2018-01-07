@@ -27,3 +27,6 @@ curl -H "Content-Type: application/json" -X POST https://exp.host/--/api/v2/push
 }'
 ````
 
+##Navigation
+
+Added a service in services/navigator. Export it and use navigate to change routes from everywhere
