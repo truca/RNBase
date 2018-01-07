@@ -1,5 +1,11 @@
 use with Expo Develolment Enviroment (XDE)
 
+##Branch Order
+navigation
+map
+upload_images
+notifications
+sockets
 
 ##Image Uploading
 
