@@ -1,8 +1,11 @@
 import React from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
-import { AppLoading, Asset, Font } from 'expo';
+import { AppLoading, Asset, Font, Notifications, Permissions } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
 import RootNavigation from './navigation/RootNavigation';
+import { getToken } from './services/notifications'
+import NavigatorService from './services/navigator';
+import { Toast, } from 'native-base'
 
 import {
   Root,
@@ -13,13 +16,75 @@ export default class App extends Session {
   state = {
     isLoadingComplete: false,
   };
+
+  registerForPushNotificationsAsync = async function () {
+    const { status: existingStatus } = await Permissions.getAsync(
+      Permissions.NOTIFICATIONS
+    );
+    let finalStatus = existingStatus;
+  
+    // only ask if permissions have not already been determined, because
+    // iOS won't necessarily prompt the user a second time.
+    if (existingStatus !== 'granted') {
+      // Android remote notification permissions are granted during the app
+      // install, so this will only ask on iOS
+      const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+      finalStatus = status;
+    }
+  
+    // Stop here if the user did not grant permissions
+    if (finalStatus !== 'granted') {
+      return;
+    }
+  
+    // Get the token that uniquely identifies this device
+    let token = await Notifications.getExpoPushTokenAsync();
+  
+    // POST the token to your backend server from where you can retrieve it to send push notifications.
+    /*return fetch(PUSH_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        token: {
+          value: token,
+        },
+        user: {
+          username: 'Brent',
+        },
+      }),
+    });*/
+  } 
+
   async componentWillMount() {
     await Expo.Font.loadAsync({
       'Roboto': require('native-base/Fonts/Roboto.ttf'),
       'Roboto_medium': require('native-base/Fonts/Roboto_medium.ttf'),
     });
     this.setState({ fontsAreLoaded: true });
+
+    this.registerForPushNotificationsAsync()
+    // Handle notifications that are received or selected while the app
+    // is open. If the app was closed and then opened by tapping the
+    // notification (rather than just tapping the app icon to open it),
+    // this function will fire on the next tick after the app starts
+    // with the notification data.
+    this._notificationSubscription = Notifications.addListener(this._handleNotification);
   }
+  async componentDidMount() {
+    const token = await getToken();
+    console.log('token', token) 
+  }
+
+  _handleNotification = (notification) => {
+    console.log('notification', notification)
+    Toast.show({ text: `${notification.data.user} te habló`, 
+        position: this.props.toastPosition, 
+        buttonText: this.props.toastText, 
+        duration: this.props.notificationDuration, })
+  };
 
   render() {
     if ( (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) || !this.state.fontsAreLoaded ) {
@@ -79,6 +144,9 @@ App.defaultProps = {
     storageBucket: 'clanapp-d35d2.appspot.com',
     messagingSenderId: '935866938730'
   },
+  toastPosition: 'bottom',
+  toastText: 'Ok',
+  notificationDuration: 5*1000,
 }
 
 const styles = StyleSheet.create({
