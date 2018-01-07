@@ -4,8 +4,6 @@ import { View, TouchableOpacity, ScrollView, Image, Animated, Easing } from 'rea
 import { Constants, ImagePicker } from 'expo';
 import { Foundation } from '@expo/vector-icons';
 
-console.log('animated', Animated) 
-
 export default class Profile extends React.Component {
   state = {
     image: null,

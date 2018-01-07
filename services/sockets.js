@@ -1,6 +1,6 @@
-var sockets;
+let instance;
 
-var Sockets = class Sockets {
+export default class Sockets {
   sockets = {}
   constructor(){
     if(!instance){
@@ -11,53 +11,62 @@ var Sockets = class Sockets {
     this.sockets[route] = new Socket(route)
   }
   subscribe(route, handlers){
-    if(subscribe[route]){
+    if(this.sockets[route]){
       //subscribe
-      this.sockets[route].subscribe(handlers)
+      this.sockets[route].subscribe(handlers, this.destroySocket(route))
     }else{
       //open and subscribe
-      open(route)
+      this.open(route) 
       this.sockets[route].subscribe(handlers)
     }
+    return this.sockets[route]
   }
   unsubscribe(handlers){
     if(this.sockets[route]) this.sockets[route].unsubscribe(handlers)
+  }
+  destroySocket(route){
+    return function(){
+      delete this.sockets[route]
+    }
   }
 }
 
 
 var Socket = class Socket {
-  _ws = null
+  ws = null
   openHandlers = []
   messageHandlers = []
   errorHandlers = []
   closeHandlers = []
-  constructor(route) {
+  destroySocket = null
+  constructor(route, destroySocket) {
     //route example: 'ws://host.com/path'
-    this._ws = new WebSocket(route);
-    this._ws.onopen = () => {
+    this.ws = new WebSocket(route);
+    this.ws.onopen = () => {
       // connection opened
-      this._ws.send('something'); // send a message
+      //this.ws.send('something'); // send a message
       this.callHandlers(this.openHandlers, null)
     };
     
-    this._ws.onmessage = (e) => {
+    this.ws.onmessage = (e) => {
       // a message was received
-      console.log(e.data);
+      //console.log(e.data);
       this.callHandlers(this.messageHandlers, e)
     };
     
-    this._ws.onerror = (e) => {
+    this.ws.onerror = (e) => {
       // an error occurred
-      console.log(e.message);
+      //console.log(e.message);
       this.callHandlers(this.errorHandlers, e)
     };
     
-    this._ws.onclose = (e) => {
+    this.ws.onclose = (e) => {
       // connection closed
-      console.log(e.code, e.reason);
+      //console.log(e.code, e.reason);
       this.callHandlers(this.closeHandlers, e)
     };
+
+    this.destroySocket = destroySocket
   }
   callHandlers(array, e){
     array.forEach(function(item) {
@@ -90,9 +99,15 @@ var Socket = class Socket {
       this.messageHandlers.length == 0 &&
       this.errorHandlers.length == 0 &&
       this.closeHandlers.length == 0
-    ) this.close()
+    ){
+      this.close()
+      this.destroySocket()
+    } 
+  }
+  send(message){
+    this.ws.send(message)
   }
   close(code = 1000, reason = "transaction complete"){
-    this._ws.close(code, reason)
+    this.ws.close(code, reason)
   }
 };
