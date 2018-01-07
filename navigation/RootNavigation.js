@@ -4,6 +4,7 @@ import { StyleSheet, View, TouchableOpacity, Icon, Text, ScrollView, Picker } fr
 import { Button } from 'native-base'
 import { FontAwesome } from '@expo/vector-icons';
 import R from 'ramda'
+import NavigatorService from '../services/navigator';
 
 import Register from '../screens/Register';
 import Login from '../screens/Login';
@@ -110,6 +111,8 @@ const AppNavigator = new StackNavigator({
 
 export default class RootNavigator extends React.Component {
   render() {
-    return <AppNavigator />;
+    return <AppNavigator ref={navigatorRef => {
+      NavigatorService.setContainer(navigatorRef);
+    }}/>;
   }
 }
