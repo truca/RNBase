@@ -13,10 +13,20 @@ export default class SocketsScreen extends React.Component {
     super(props)
     this.sockets = new Sockets()
     console.log("sockets", this.sockets)
-    this.echo = this.sockets.subscribe("ws://echo.websocket.org", {
+    
+    this.subscribe("ws://echo.websocket.org")
+    this.subscribe("wss://demos.kaazing.com/echo")
+  }
+  subscribe(route){
+    this.echo = this.sockets.subscribe(route, {
       message: this.message
     })
-    console.log("echo", this.echo)
+  }
+  unsubscribe(route){
+    this.sockets.unsubscribe(route, {
+      message: this.message
+    })
+    this.echo = null
   }
   message(e){ console.log(e.data) }
   render() {
@@ -32,6 +42,26 @@ export default class SocketsScreen extends React.Component {
           <Text style={text}>
             Enviar Mensaje
           </Text>
+        </Button>
+        <Button block style={buttons} onPress={() => this.subscribe("ws://echo.websocket.org")}>
+          <Text style={text}>
+            Abrir Socket 1
+          </Text> 
+        </Button>
+        <Button block style={buttons} onPress={() => this.unsubscribe("ws://echo.websocket.org")}>
+          <Text style={text}>
+            Cerrar Socket 1
+          </Text> 
+        </Button>
+        <Button block style={buttons} onPress={() => this.subscribe("wss://demos.kaazing.com/echo")}>
+          <Text style={text}>
+            Abrir Socket 2
+          </Text> 
+        </Button>
+        <Button block style={buttons} onPress={() => this.unsubscribe("wss://demos.kaazing.com/echo")}>
+          <Text style={text}>
+            Cerrar Socket 2
+          </Text> 
         </Button>
       </Container>
     ) 

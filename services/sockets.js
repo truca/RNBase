@@ -7,22 +7,26 @@ export default class Sockets {
       instance = this;
     }
   }
-  open(route) {
-    this.sockets[route] = new Socket(route)
+  open(route, destroySocket) {
+    this.sockets[route] = new Socket(route, destroySocket.bind(this)) 
   }
   subscribe(route, handlers){
     if(this.sockets[route]){
       //subscribe
-      this.sockets[route].subscribe(handlers, this.destroySocket(route))
+      this.sockets[route].subscribe(handlers) 
     }else{
       //open and subscribe
-      this.open(route) 
-      this.sockets[route].subscribe(handlers)
+      this.open(route, this.destroySocket(route)) 
+      this.sockets[route].subscribe(handlers) 
     }
-    return this.sockets[route]
+    console.log("sockets", Object.keys(this.sockets))
+    return this.sockets[route] 
   }
-  unsubscribe(handlers){
-    if(this.sockets[route]) this.sockets[route].unsubscribe(handlers)
+  unsubscribe(route, handlers){
+    if(this.sockets[route]){
+      this.sockets[route].unsubscribe(handlers)
+    }
+    console.log("sockets", Object.keys(this.sockets))
   }
   destroySocket(route){
     return function(){
@@ -90,7 +94,10 @@ var Socket = class Socket {
   }
   unsubscribe(handlers){
     if(handlers.open)     this.filter(this.openHandlers, handlers.open);
-    if(handlers.message)  this.filter(this.messageHandlers, handlers.message);
+    if(handlers.message){
+      // this.filter(this.messageHandlers, handlers.message);
+      this.messageHandlers = this.messageHandlers.filter(item => { if (item !== handlers.message) return item })
+    } 
     if(handlers.error)    this.filter(this.errorHandlers, handlers.error);
     if(handlers.close)    this.filter(this.closeHandlers, handlers.close);
     
