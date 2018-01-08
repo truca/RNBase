@@ -6,6 +6,8 @@ import RootNavigation from './navigation/RootNavigation';
 import { getToken } from './services/notifications'
 import NavigatorService from './services/navigator';
 import { Toast, } from 'native-base'
+import { Provider } from 'react-redux'
+import store from './redux/store'
 
 import {
   Root,
@@ -97,13 +99,15 @@ export default class App extends Session {
       );
     } else {
       return (
-        <Root>
-          <View style={styles.container}>
-            {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-            {Platform.OS === 'android' && <View style={styles.statusBarUnderlay} />}
-            <RootNavigation />
-          </View>
-        </Root>
+        <Provider store={store}>
+          <Root>
+            <View style={styles.container}>
+              {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
+              {Platform.OS === 'android' && <View style={styles.statusBarUnderlay} />}
+              <RootNavigation />
+            </View>
+          </Root>
+        </Provider>
       );
     }
   }

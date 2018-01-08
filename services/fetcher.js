@@ -37,6 +37,11 @@ export default class Fetcher {
     }, actionThunk)
   }
   operation(path, configuration, actionThunk){
-    return fetch(`${this.route}${path}`, config).then(res => this.dispatch( actionThunk(res) ))
+    return fetch(`${this.route}${path}`, configuration)
+      .then(res => {
+        var responseParsed = JSON.parse(res._bodyInit)
+        console.log('result', responseParsed)
+        return this.dispatch( actionThunk(responseParsed))
+      })
   }
 }

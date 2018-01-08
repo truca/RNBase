@@ -13,6 +13,7 @@ import Map from '../screens/Map';
 import Chat from '../screens/Chat';
 import Profile from '../screens/Profile';
 import Sockets from '../screens/Sockets';
+import Fetcher from '../screens/Fetcher';
 
 import Session from 'rnsession'
 
@@ -20,6 +21,7 @@ class CustomDrawerContentComponent extends Session {
   getItems(){
     let items = this.state.user? 
       [ 
+        { "key": "Fetcher", "routeName": "Fetcher", },
         { "key": "Sockets", "routeName": "Sockets", },
         { "key": "Map", "routeName": "Map", },
         { "key": "Profile", "routeName": "Profile", }
@@ -62,6 +64,7 @@ const styles = StyleSheet.create({
 
 const RootDrawerNavigator = DrawerNavigator(
   {
+    Fetcher: { screen: Fetcher, },
     Sockets: { screen: Sockets, },
     Map: { screen: Map, },
     Profile: { screen: Profile, },
